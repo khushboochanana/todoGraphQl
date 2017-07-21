@@ -7,12 +7,14 @@ var GraphQLList = graphql.GraphQLList
 var GraphQLNonNull = graphql.GraphQLNonNull
 var GraphQLSchema = graphql.GraphQLSchema
 
+var todoService=require('../../api/todo/todo.service')
+
 var TODOs = [];
 
 var TodoType = new GraphQLObjectType({
   name: 'todo',
   fields: () => ({
-    id: {
+    _id: {
       type: GraphQLInt,
       description: 'Todo id'
     },
@@ -32,7 +34,10 @@ var QueryType = new GraphQLObjectType({
   fields: () => ({
     todos: {
       type: new GraphQLList(TodoType),
-      resolve: () => TODOs
+      resolve: () => {
+        return new Promise(function (resolve, reject) {
+          todoService.list( resolve);
+      })}
     }
   })
 });
@@ -47,12 +52,12 @@ var MutationAdd = {
     }
   },
   resolve: (root, args) => {
-    TODOs.push({
-      id: (new Date()).getTime(),
-      title: args.title,
-      completed: false
-    });
-    return TODOs;
+    return new Promise(function (resolve, reject) {
+      todoService.addTodo({
+        title: args.title,
+        completed: false
+      }, resolve);
+    })
   }
 };
 
@@ -60,14 +65,14 @@ var MutationToggle = {
   type: new GraphQLList(TodoType),
   description: 'Toggle the todo',
   args: {
-    id: {
+    _id: {
       name: 'Todo Id',
       type: new GraphQLNonNull(GraphQLInt)
     }
   },
   resolve: (root, args) => {
     TODOs
-      .filter((todo) => todo.id === args.id)
+      .filter((todo) => todo._id === args.id)
       .forEach((todo) => todo.completed = !todo.completed)
     return TODOs;
   }
@@ -77,7 +82,7 @@ var MutationDestroy = {
   type: new GraphQLList(TodoType),
   description: 'Destroy the todo',
   args: {
-    id: {
+    _id: {
       name: 'Todo Id',
       type: new GraphQLNonNull(GraphQLInt)
     }
@@ -114,7 +119,7 @@ var MutationSave = {
   type: new GraphQLList(TodoType),
   description: 'Edit a todo',
   args: {
-    id: {
+    _id: {
       name: 'Todo Id',
       type: new GraphQLNonNull(GraphQLInt)
     },

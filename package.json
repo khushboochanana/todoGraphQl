@@ -23,6 +23,20 @@
   "dependencies": {
     "express": "^4.13.3",
     "express-graphql": "^0.4.4",
-    "graphql": "^0.4.12"
+    "graphql": "^0.4.12",
+    "mongoose": "latest",
+    "classnames": "^2.1.5",
+    "director": "^1.2.0",
+    "jquery": "^2.1.4",
+    "react": "^0.13.3",
+    "request": "^2.65.0",
+    "psi": "^0.1.1",
+    "run-sequence": "^1.0.1",
+    "todomvc-app-css": "^2.0.0",
+    "todomvc-common": "^1.0.1"
+  },
+  "devDependencies": {
+    "webpack": "^3.0.0",
+    "webpack-dev-server": "^2.5.0"
   }
 }
